@@ -125,8 +125,8 @@ public class DigiMorph {
                         Serializer.STRING, // key serializer
                         Serializer.STRING   // value serializer
                 )
-                        .pageSize(64 * 1024) // set Page Size to 64KB
-                        .nodeSize(8)       // set Node Size to 8 entries
+                        .pageSize(64 * 1024)
+                        .nodeSize(8)
                         .createFromSink();
 
 

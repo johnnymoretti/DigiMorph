@@ -10,7 +10,7 @@ public class Main {
 
     private static void printUsage(Options opt){
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("DigiMorph", opt);
+        formatter.printHelp("echo <word> | java -jar DigiMorph.jar \n       cat <path to file> | java -jar DigiMorph.jar\n\n", opt);
         System.exit(1);
     }
 
@@ -23,17 +23,23 @@ public class Main {
 
     public static void main(String[] args) {
         Options options = new Options();
-        options.addOption(Option.builder("r").hasArg().argName("path to file").desc("Retrain Morphological Anlizer").build());
-        options.addOption("version","print the tool version");
+        options.addOption(Option.builder("r").hasArg().argName("path to file").desc("Retrain Morphological Analyzer").build());
+        options.addOption( "h", "help", false, "show help" );
+        options.addOption( "v", "version", false, "print the tool version" );
         CommandLineParser parser = new DefaultParser();
 
         try {
             CommandLine cmd = parser.parse(options, args);
-            if (cmd.hasOption("--version")){
+            if (cmd.hasOption("version")){
                 System.out.println(DigiMorph.getVersion());
                 System.exit(0);
 
             }
+
+            if (cmd.hasOption("help")){
+                printUsage(options);
+            }
+
 
             if (cmd.hasOption('r')){
                 if(cmd.getOptionValue('r') != null) {
