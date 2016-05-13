@@ -10,5 +10,3 @@ Implementation-Title: DigiMorph - Morphological Analizer
 Implementation-Vendor: Developed by Giovanni Moretti - DH @ FBK
 Specification-Vendor: DH Group @ FBK
 Specification-Version: 0.05a
-
-
