@@ -1,6 +1,5 @@
 .idea
 *.iml
 out
-*.db
 target
 italian.db
