@@ -137,7 +137,7 @@ public class DigiMorph {
 
                 String feature = record.get(2);
                 String lemma = record.get(1);
-                String forma = record.get(0);
+                String forma = record.get(0).toLowerCase();
                 if (!map.containsKey(forma)) {
                     map.put(forma, "");
                 }
