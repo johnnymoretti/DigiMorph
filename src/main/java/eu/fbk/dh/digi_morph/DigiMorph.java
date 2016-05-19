@@ -2,10 +2,8 @@ package eu.fbk.dh.digi_morph;
 
 
 import com.google.common.collect.Lists;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.mapdb.Serializer;
 import org.mapdb.SortedTableMap;
 import org.mapdb.volume.MappedFileVol;
@@ -133,31 +131,22 @@ public class DigiMorph {
         SortedMap<String, String> map = new TreeMap<String, String>();
         try {
             Reader in = new FileReader(csv_path);
-            Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+            Iterable<CSVRecord> records = CSVFormat.TDF.withIgnoreEmptyLines().withQuote('≥').parse(in);
             for (CSVRecord record : records) {
-                String codgram = record.get(0);
-                String lemma = StringEscapeUtils.unescapeHtml4(record.get(1));
-                String codflessione = record.get(2);
-                String forma = StringEscapeUtils.unescapeHtml4(record.get(3));
+
+
+                String feature = record.get(2);
+                String lemma = record.get(1);
+                String forma = record.get(0);
                 if (!map.containsKey(forma)) {
                     map.put(forma, "");
                 }
                 if (lemma == null) {
                     lemma = "";
                 }
-                if (codflessione == null) {
-                    codflessione = "";
-                }
-                String newcode = mapcodfless.get(codflessione);
 
-                if (newcode != null) {
-                    newcode = newcode.replace("•", lemma + "+"+mapcodgram.get(codgram)+"+");
-                } else {
-                    newcode = "nil";
-                }
 
-                map.put(forma, map.get(forma) + " " + lemma + "+" + mapcodgram.get(codgram) + "+" + newcode);
-
+                map.put(forma, map.get(forma) + " " + lemma + "+" + feature);
             }
 
 
