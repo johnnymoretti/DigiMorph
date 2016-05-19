@@ -18,7 +18,7 @@ import java.util.concurrent.*;
 /**
  *
  * @author Giovanni Moretti at Digital Humanities group at FBK.
- * @version 0.2a
+ * @version 0.4a
  */
 public class DigiMorph {
     String lang = "";
@@ -45,7 +45,7 @@ public class DigiMorph {
     /**
      *
      * @author Giovanni Moretti
-     * @version 0.2a
+     * @version 0.4a
      * @param token_list list of string containing words.
      * @return  list of string containing the results of the Morphological analyzer.
      */
@@ -106,7 +106,10 @@ public class DigiMorph {
     Map<String, String> mapcodgram = new HashMap<String, String>();
     Map<String, String> mapcodfless = new HashMap<String, String>();
 
-
+    /**
+     * This method creates or re-creates the db file with the morphology forms used by the analyzer
+     * @param csv_path - String contains the tsv file path
+     */
 
 
     public void re_train(String csv_path) {

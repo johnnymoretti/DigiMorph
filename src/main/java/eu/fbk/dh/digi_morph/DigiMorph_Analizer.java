@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- *
  * @author Giovanni Moretti at Digital Humanities group at FBK.
  * @version 0.2a
  */
 public class DigiMorph_Analizer implements Callable<List<String>> {
-   // Volume volume = null;
+    // Volume volume = null;
     private SortedTableMap<String, String> map = null;
 
     List<String> tokens;
@@ -100,9 +99,9 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
             output = no_prefix_phase;
         }
 
-        if (output.length() == 0){
+        if (output.length() == 0) {
             return token;
-        }else {
+        } else {
             return output;
         }
         //this.volume.close();
@@ -117,18 +116,17 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         out_buffer.append(basic_result != null ? basic_result : "");
 
 
-
         /////////// fermati qui per risolvere formario completo ////////
 
 
-      //return token;
-
-
-
+        //return token;
 
 
         //forme composte
         // suffix
+
+
+
         String suffix_substring = "";
 
         if (token.endsWith("gli")) {
