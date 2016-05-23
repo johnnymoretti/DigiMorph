@@ -38,7 +38,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>eu.fbk.dh.digimorph.Main</mainClass>
+                            <mainClass>eu.fbk.dh.digimorph.runner.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
