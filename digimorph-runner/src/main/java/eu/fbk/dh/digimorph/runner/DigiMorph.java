@@ -1,5 +1,4 @@
-package eu.fbk.dh.digi_morph;
-
+package eu.fbk.dh.digimorph.runner;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.csv.CSVFormat;
@@ -16,38 +15,33 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- *
  * @author Giovanni Moretti at Digital Humanities group at FBK.
  * @version 0.4a
  */
 public class DigiMorph {
+
     String model_path = "";
     ExecutorService executor = null;
     List<Future<List<String>>> futures = null;
 
-
     Set<Callable<List<String>>> callables = new HashSet<Callable<List<String>>>();
 
-
-    public static String getVersion(){
-        return DigiMorph.class.getPackage().getImplementationTitle()+"\n"
+    public static String getVersion() {
+        return DigiMorph.class.getPackage().getImplementationTitle() + "\n"
                 + DigiMorph.class.getPackage().getSpecificationVendor() + " - "
                 + DigiMorph.class.getPackage().getImplementationVendor() + "\n"
-                + "Version: "+DigiMorph.class.getPackage().getSpecificationVersion();
+                + "Version: " + DigiMorph.class.getPackage().getSpecificationVersion();
     }
-
-
 
     public DigiMorph(String model_path) {
         this.model_path = model_path;
     }
 
     /**
-     *
+     * @param token_list list of string containing words.
+     * @return list of string containing the results of the Morphological analyzer.
      * @author Giovanni Moretti
      * @version 0.4a
-     * @param token_list list of string containing words.
-     * @return  list of string containing the results of the Morphological analyzer.
      */
 
     public List<String> getMorphology(List token_list) {
@@ -56,14 +50,10 @@ public class DigiMorph {
 
         SortedTableMap<String, String> map = SortedTableMap.open(volume, Serializer.STRING, Serializer.STRING);
 
-
-
-
         List<String> results = new LinkedList<String>();
 
         int threadsNumber = Runtime.getRuntime().availableProcessors();
         List<List<String>> parts;
-
 
         parts = Lists.partition(token_list, (token_list.size() / threadsNumber) + 1);
 
@@ -76,7 +66,7 @@ public class DigiMorph {
         callables = new LinkedHashSet<Callable<List<String>>>();
 
         for (int pts = 0; pts < parts.size(); pts++) {
-            callables.add(new DigiMorph_Analizer(parts.get(pts), model_path,map));
+            callables.add(new DigiMorph_Analizer(parts.get(pts), model_path, map));
         }
 
         try {
@@ -102,17 +92,16 @@ public class DigiMorph {
         return results;
     }
 
-
     Map<String, String> mapcodgram = new HashMap<String, String>();
     Map<String, String> mapcodfless = new HashMap<String, String>();
 
     /**
      * This method creates or re-creates the db file with the morphology forms used by the analyzer
+     *
      * @param csv_path - String contains the tsv file path
      */
 
-
-    public void re_train(String csv_path,boolean include_lemma) {
+    public void re_train(String csv_path, boolean include_lemma) {
         File dbf = new File(model_path);
         if (dbf.exists()) {
             dbf.delete();
@@ -130,13 +119,11 @@ public class DigiMorph {
                         .nodeSize(8)
                         .createFromSink();
 
-
         SortedMap<String, String> map = new TreeMap<String, String>();
         try {
             Reader in = new FileReader(csv_path);
             Iterable<CSVRecord> records = CSVFormat.TDF.withIgnoreEmptyLines().withQuote('≥').parse(in);
             for (CSVRecord record : records) {
-
 
                 String feature = record.get(2);
                 String lemma = record.get(1);
@@ -150,41 +137,32 @@ public class DigiMorph {
 
                 if (include_lemma) {
                     map.put(forma, map.get(forma) + " " + lemma + "+" + feature);
-                }else {
+                } else {
                     map.put(forma, map.get(forma) + " " + feature);
                 }
             }
-
 
             for (Map.Entry<String, String> e : map.entrySet()) {
                 sink.put(e.getKey(), e.getValue());
             }
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         SortedTableMap<String, String> stmap = sink.create();
         volume.close();
 
         System.out.println("done");
 
-
     }
-
-
-
 
     private void fill_codfless() {
 
     }
 
-
     private void fill_codgram() {
 
     }
-
 
 }

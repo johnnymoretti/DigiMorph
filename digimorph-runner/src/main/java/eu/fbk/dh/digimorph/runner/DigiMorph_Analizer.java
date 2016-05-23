@@ -1,8 +1,7 @@
-package eu.fbk.dh.digi_morph;
+package eu.fbk.dh.digimorph.runner;
 
 import com.google.common.base.Joiner;
 import org.mapdb.SortedTableMap;
-
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,6 +13,7 @@ import java.util.concurrent.Callable;
  * @version 0.2a
  */
 public class DigiMorph_Analizer implements Callable<List<String>> {
+
     // Volume volume = null;
     private SortedTableMap<String, String> map = null;
 
@@ -65,12 +65,10 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         add("se");
     }};
 
-
     public DigiMorph_Analizer(List<String> tokens, String lang, SortedTableMap<String, String> map) {
         this.tokens = tokens;
         this.map = map;
     }
-
 
     public List<String> call() {
         List<String> results = new LinkedList<String>();
@@ -79,7 +77,6 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         }
         return results;
     }
-
 
     public String getMorphology(String token) {
         String original_token = token;
@@ -92,7 +89,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
                     String prefix_phase = process_token(token);
                     if (prefix_phase.length() > 0) {
                         String prefisso = process_token(p);
-                        output =  p + "/" + prefix_phase.replace(" "," "+p);
+                        output = p + "/" + prefix_phase.replace(" ", " " + p);
                     }
                 }
             }
@@ -116,17 +113,12 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         String basic_result = this.map.get(token);
         out_buffer.append(basic_result != null ? basic_result : "");
 
-
         /////////// fermati qui per risolvere formario completo ////////
-
 
         //return token;
 
-
         //forme composte
         // suffix
-
-
 
         String suffix_substring = "";
 
@@ -140,7 +132,6 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
             }
         }
 
-
         if (suffix_substring.length() > 0) {
             String head = token.substring(0, token.length() - suffix_substring.length());
             String middle_suffix_substring = "";
@@ -150,13 +141,11 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
                 }
             }
 
-
             head = head.substring(0, head.length() - middle_suffix_substring.length());
 
-
-            String possible_middle_suffix = middle_suffix_substring.length() > 0 ? map.get(middle_suffix_substring) : "";
+            String possible_middle_suffix =
+                    middle_suffix_substring.length() > 0 ? map.get(middle_suffix_substring) : "";
             String possible_suffix = suffix_substring.length() > 0 ? map.get(suffix_substring) : "";
-
 
             //refine head
             String possible_verb;
@@ -172,7 +161,6 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
             } else if (possible_suffix.length() > 0) {
                 close_suffix_head = suffix_substring.charAt(0);
             }
-
 
             if (head_ending == close_suffix_head) {
                 head = head.substring(0, head.length() - 1);
@@ -195,7 +183,6 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
                 possible_verb = map.get((head));
             }
 
-
             if (possible_verb != null) {
                 String inf = "";
                 String suf = "";
@@ -203,7 +190,6 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
                 String[] verb_items = possible_verb.split(" ");
                 String[] suffix_items = possible_suffix.split(" ");
                 String[] mid_suffix_items = possible_middle_suffix.split(" ");
-
 
                 List<String> infiniti = new ArrayList<String>();
                 List<String> mid_suff = new ArrayList<String>();
@@ -237,14 +223,19 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
 
                 if (inf.length() > 0) {
                     if (mid_suff.size() > 0) {
-                        for (String verb_hypernym : infiniti)
-                            for (String object_hypernym : mid_suff)
-                                for (String subject_hypernym : suff)
+                        for (String verb_hypernym : infiniti) {
+                            for (String object_hypernym : mid_suff) {
+                                for (String subject_hypernym : suff) {
                                     results.add(verb_hypernym + object_hypernym + subject_hypernym);
+                                }
+                            }
+                        }
                     } else {
-                        for (String verb_hypernym : infiniti)
-                            for (String subject_hypernym : suff)
+                        for (String verb_hypernym : infiniti) {
+                            for (String subject_hypernym : suff) {
                                 results.add(verb_hypernym + subject_hypernym);
+                            }
+                        }
                     }
                     out_buffer.append(Joiner.on(" ").join(results));
 
@@ -257,6 +248,5 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
             return (orginal_token + out_buffer.toString());
         }
     }
-
 
 }
