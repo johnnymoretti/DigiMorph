@@ -33,7 +33,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         add("zoo");
         add("circon");
         add("circom");
-
+        add("in");
     }};
 
     private ArrayList<String> suffix = new ArrayList() {{
@@ -82,6 +82,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
 
 
     public String getMorphology(String token) {
+        String original_token = token;
         String output = "";
         String no_prefix_phase = process_token(token);
         if (no_prefix_phase.length() == 0) {
@@ -91,7 +92,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
                     String prefix_phase = process_token(token);
                     if (prefix_phase.length() > 0) {
                         String prefisso = process_token(p);
-                        output = (prefisso.length() > 0 ? prefisso : p) + "/" + prefix_phase;
+                        output =  p + "/" + prefix_phase.replace(" "," "+p);
                     }
                 }
             }
@@ -100,7 +101,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         }
 
         if (output.length() == 0) {
-            return token;
+            return original_token;
         } else {
             return output;
         }

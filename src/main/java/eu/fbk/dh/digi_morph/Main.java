@@ -15,9 +15,9 @@ public class Main {
     }
 
 
-    private static void retrain(String filepath){
-        DigiMorph dm = new DigiMorph("italian");
-        dm.re_train(filepath);
+    private static void retrain(String filepath,boolean include_lemma){
+        DigiMorph dm = new DigiMorph("italian.db");
+        dm.re_train(filepath,include_lemma);
         System.exit(0);
     }
 
@@ -25,6 +25,7 @@ public class Main {
         Options options = new Options();
         options.addOption(Option.builder("r").hasArg().argName("path to file").desc("Retrain Morphological Analyzer").build());
         options.addOption( "h", "help", false, "show help" );
+        options.addOption( "l", "lemma", false, "include lemma" );
         options.addOption( "v", "version", false, "print the tool version" );
         CommandLineParser parser = new DefaultParser();
 
@@ -43,7 +44,7 @@ public class Main {
 
             if (cmd.hasOption('r')){
                 if(cmd.getOptionValue('r') != null) {
-                    retrain(cmd.getOptionValue('r'));
+                    retrain(cmd.getOptionValue('r'),cmd.hasOption("lemma"));
                 }else {
                     printUsage(options);
                 }
@@ -68,7 +69,7 @@ public class Main {
             text.add(line);
 
         }
-        DigiMorph dm = new DigiMorph("italian");
+        DigiMorph dm = new DigiMorph("italian.db");
 
         for (String s : dm.getMorphology(text)) {
             System.out.println(s);

@@ -21,7 +21,7 @@ import java.util.concurrent.*;
  * @version 0.4a
  */
 public class DigiMorph {
-    String lang = "";
+    String model_path = "";
     ExecutorService executor = null;
     List<Future<List<String>>> futures = null;
 
@@ -38,8 +38,8 @@ public class DigiMorph {
 
 
 
-    public DigiMorph(String lang) {
-        this.lang = lang;
+    public DigiMorph(String model_path) {
+        this.model_path = model_path;
     }
 
     /**
@@ -52,7 +52,7 @@ public class DigiMorph {
 
     public List<String> getMorphology(List token_list) {
         Volume volume = null;
-        volume = MappedFileVol.FACTORY.makeVolume(lang + ".db", true);
+        volume = MappedFileVol.FACTORY.makeVolume(model_path, true);
 
         SortedTableMap<String, String> map = SortedTableMap.open(volume, Serializer.STRING, Serializer.STRING);
 
@@ -76,7 +76,7 @@ public class DigiMorph {
         callables = new LinkedHashSet<Callable<List<String>>>();
 
         for (int pts = 0; pts < parts.size(); pts++) {
-            callables.add(new DigiMorph_Analizer(parts.get(pts), this.lang,map));
+            callables.add(new DigiMorph_Analizer(parts.get(pts), model_path,map));
         }
 
         try {
@@ -112,14 +112,14 @@ public class DigiMorph {
      */
 
 
-    public void re_train(String csv_path) {
-        File dbf = new File(lang + ".db");
+    public void re_train(String csv_path,boolean include_lemma) {
+        File dbf = new File(model_path);
         if (dbf.exists()) {
             dbf.delete();
         }
         fill_codgram();
         fill_codfless();
-        Volume volume = MappedFileVol.FACTORY.makeVolume(lang + ".db", false);
+        Volume volume = MappedFileVol.FACTORY.makeVolume(model_path, false);
         SortedTableMap.Sink<String, String> sink =
                 SortedTableMap.create(
                         volume,
@@ -148,8 +148,11 @@ public class DigiMorph {
                     lemma = "";
                 }
 
-
-                map.put(forma, map.get(forma) + " " + lemma + "+" + feature);
+                if (include_lemma) {
+                    map.put(forma, map.get(forma) + " " + lemma + "+" + feature);
+                }else {
+                    map.put(forma, map.get(forma) + " " + feature);
+                }
             }
 
 
