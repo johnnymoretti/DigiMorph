@@ -11,6 +11,6 @@
 
     <modules>
         <module>digimorph-annotator</module>
-        <module>digimorph-runner</module>
+        <module>digimorph-main</module>
     </modules>
 </project>
