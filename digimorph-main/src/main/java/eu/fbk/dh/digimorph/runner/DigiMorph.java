@@ -88,7 +88,7 @@ public class DigiMorph {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        volume.close();
         return results;
     }
 
