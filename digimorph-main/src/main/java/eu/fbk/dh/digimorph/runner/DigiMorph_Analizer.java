@@ -65,7 +65,7 @@ public class DigiMorph_Analizer implements Callable<List<String>> {
         add("se");
     }};
 
-    public DigiMorph_Analizer(List<String> tokens, String lang, SortedTableMap<String, String> map) {
+    public DigiMorph_Analizer(List<String> tokens, SortedTableMap<String, String> map) {
         this.tokens = tokens;
         this.map = map;
     }

@@ -66,7 +66,7 @@ public class DigiMorph {
         callables = new LinkedHashSet<Callable<List<String>>>();
 
         for (int pts = 0; pts < parts.size(); pts++) {
-            callables.add(new DigiMorph_Analizer(parts.get(pts), model_path, map));
+            callables.add(new DigiMorph_Analizer(parts.get(pts), map));
         }
 
         try {
@@ -88,6 +88,10 @@ public class DigiMorph {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        for (int pts = 0; pts < parts.size(); pts++) {
+            parts.get(pts).clear();
+        }
+
         volume.close();
         return results;
     }

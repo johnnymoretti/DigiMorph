@@ -14,15 +14,16 @@ import java.util.*;
  */
 public class DigiMorphAnnotator implements Annotator {
 
-    String model_path = "";
+    DigiMorph dm;
 
     public DigiMorphAnnotator(String annotatorName, Properties prop) {
-        model_path = prop.getProperty(annotatorName + ".model");
+        String model_path = prop.getProperty(annotatorName + ".model");
+        this.dm = DigiMorphModel.getInstance(model_path);
     }
 
     public void annotate(Annotation annotation) {
 
-        DigiMorph dm = new DigiMorph(this.model_path);
+
         List<String> token_word = new LinkedList<String>();
 
         if (annotation.has(CoreAnnotations.SentencesAnnotation.class)) {
