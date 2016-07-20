@@ -1,6 +1,7 @@
 package eu.fbk.dh.digimorph.runner;
 
 import com.google.common.collect.Lists;
+import com.sun.istack.internal.Nullable;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.mapdb.Serializer;
@@ -33,7 +34,14 @@ public class DigiMorph {
                 + "Version: " + DigiMorph.class.getPackage().getSpecificationVersion();
     }
 
-    public DigiMorph(String model_path) {
+    public DigiMorph() {
+        this(null);
+    }
+
+    public DigiMorph(@Nullable String model_path) {
+        if (model_path == null) {
+            model_path = this.getClass().getResource("/italian.db").getFile();
+        }
         this.model_path = model_path;
     }
 

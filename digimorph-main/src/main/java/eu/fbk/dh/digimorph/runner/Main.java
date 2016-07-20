@@ -65,7 +65,7 @@ public class Main {
             text.add(line);
 
         }
-        DigiMorph dm = new DigiMorph("italian.db");
+        DigiMorph dm = new DigiMorph();
 
         for (String s : dm.getMorphology(text)) {
             System.out.println(s);
