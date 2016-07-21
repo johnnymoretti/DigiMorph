@@ -97,14 +97,24 @@ public class DigiLemmaAnnotator implements Annotator {
     public void annotate(Annotation annotation) {
         if (annotation.has(CoreAnnotations.SentencesAnnotation.class)) {
             for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+                String last_valuable_genre = "";
+
                 List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
                 for (CoreLabel c : tokens) {
                     String[] morph_fatures = c.get(CoreAnnotations.MorphoCaseAnnotation.class).split(" ");
                     String pos = c.get(CoreAnnotations.PartOfSpeechAnnotation.class);
                     c.set(CoreAnnotations.LemmaAnnotation.class, morph_fatures[0]);
 
+
                     if (morph_fatures.length > 1) {
                         if (morph_fatures.length == 2) {
+
+                            if (morph_fatures[1].contains("+art") && morph_fatures[1].contains("+m+")) {
+                                last_valuable_genre = "m";
+                            } else {
+                                last_valuable_genre = "f";
+                            }
+
                             c.set(CoreAnnotations.LemmaAnnotation.class,
                                     morph_fatures[1].split("\\+")[0].split("~")[0]);
                         } else {
@@ -113,32 +123,44 @@ public class DigiLemmaAnnotator implements Annotator {
                             for (int i = 1; i < morph_fatures.length; i++) {
                                 lemmas.add(morph_fatures[i].split("\\+")[0].split("~")[0]);
                             }
-
                             if (lemmas.size() > 1) {
                                 //woking with multiple features element
                                 String featMapped = pos_morpho_mapping.get(pos);
 
-                                //System.out.println(pos + " " + c.word());
+                                String possible_candidate = "";
+                                String firsCandidate = "";
                                 if (featMapped != null) {
                                     for (String feature : morph_fatures) {
                                         if (feature.contains(featMapped)) {
-                                            c.set(CoreAnnotations.LemmaAnnotation.class,
-                                                    feature.split("\\+")[0].split("~")[0]);
-                                            break;
+                                            if (firsCandidate.length() == 0) {
+                                                firsCandidate = feature.split("\\+")[0].split("~")[0];
+                                            }
+
+                                            if (featMapped.equals("+art") && feature.contains("+m+")) {
+                                                last_valuable_genre = "m";
+                                            } else if (featMapped.equals("+art") && feature.contains("+f+")) {
+                                                last_valuable_genre = "f";
+                                            }
+
+                                            if (last_valuable_genre.equals("m") && feature.contains("+m+")) {
+                                                possible_candidate = feature.split("\\+")[0].split("~")[0];
+                                            } else if (last_valuable_genre.equals("m") && feature.contains("+f+")) {
+                                                possible_candidate = feature.split("\\+")[0].split("~")[0];
+                                            }
+
                                         }
                                     }
+                                    c.set(CoreAnnotations.LemmaAnnotation.class, possible_candidate.length() > 0 ? possible_candidate : firsCandidate);
                                 }
 
                             } else {
-                                c.set(CoreAnnotations.LemmaAnnotation.class,
-                                        morph_fatures[1].split("\\+")[0].split("~")[0]);
+                                c.set(CoreAnnotations.LemmaAnnotation.class,morph_fatures[1].split("\\+")[0].split("~")[0]);
                             }
                         }
                     }
 
                 }
             }
-
         }
 
     }
