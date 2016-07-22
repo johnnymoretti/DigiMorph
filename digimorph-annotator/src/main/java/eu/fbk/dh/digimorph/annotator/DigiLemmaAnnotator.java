@@ -130,7 +130,7 @@ public class DigiLemmaAnnotator implements Annotator {
                                     String featMapped = pos_morpho_mapping.get(pos);
 
                                     String possible_candidate = "";
-                                    String firsCandidate = "";
+                                    String firsCandidate = c.word();
                                     if (featMapped != null) {
                                         for (String feature : morph_fatures) {
                                             if (feature.contains(featMapped)) {
